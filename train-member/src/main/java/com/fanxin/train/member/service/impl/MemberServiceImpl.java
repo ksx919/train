@@ -3,6 +3,7 @@ package com.fanxin.train.member.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import com.fanxin.train.common.exception.BusinessException;
 import com.fanxin.train.common.exception.BusinessExceptionEnum;
+import com.fanxin.train.common.util.SnowUtil;
 import com.fanxin.train.member.domain.Member;
 import com.fanxin.train.member.domain.MemberExample;
 import com.fanxin.train.member.mapper.MemberMapper;
@@ -36,7 +37,7 @@ public class MemberServiceImpl implements MemberService {
         }
 
         Member member = new Member();
-        member.setId(System.currentTimeMillis());
+        member.setId(SnowUtil.getSnowflakeNextId());
         member.setMobile(mobile);
         memberMapper.insert(member);
         return member.getId();
