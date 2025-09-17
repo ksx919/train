@@ -1,55 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration scan="true" scanPeriod="30 seconds">
+<configuration>
+    <!-- 修改一下路径-->
+    <property name="PATH" value="./log/member"></property>
 
-    <!-- 通用变量定义 -->
-    <property name="LOG_HOME" value="./logs" />
-    <property name="APP_NAME" value="train-member" />
-    <!-- 注意：移除了 %clr 相关变量，改用标准模式或Spring Boot扩展模式 -->
-    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n" />
-    <!-- 对于彩色输出，Spring Boot提供了内置支持，通常无需在pattern中直接使用%clr -->
-    <property name="CONSOLE_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} [%thread] %logger{36} - %msg%n"/>
-
-    <!-- 1. 控制台输出 (彩色, 主要用于开发环境) -->
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <!-- 使用Spring Boot提供的CONSOLE_LOG_PATTERN或自定义不含%clr的格式 -->
-            <pattern>${CONSOLE_PATTERN}</pattern>
-            <charset>UTF-8</charset>
+            <!--            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) %blue(%-50logger{50}:%-4line) %thread %green(%-18X{LOG_ID}) %msg%n</Pattern>-->
+            <Pattern>%d{HH:mm:ss.SSS} %highlight(%-5level) %blue(%-30logger{30}:%-4line) %thread %green(%-18X{LOG_ID}) %msg%n</Pattern>
         </encoder>
     </appender>
 
-    <!-- 2. 滚动文件输出 (所有INFO及以上级别日志) -->
-    <appender name="FILE-ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_HOME}/${APP_NAME}.log</file>
-        <encoder>
-            <pattern>${LOG_PATTERN}</pattern>
-            <charset>UTF-8</charset>
-        </encoder>
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <!-- 滚动文件模式: 按日期(天)和索引滚动，并自动压缩归档 -->
-            <fileNamePattern>${LOG_HOME}/${APP_NAME}-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
-            <!-- 每个日志文件最大大小 -->
-            <maxFileSize>100MB</maxFileSize>
-            <!-- 保留最长30天的历史日志 -->
-            <maxHistory>30</maxHistory>
-            <!-- 所有日志文件总大小上限 -->
-            <totalSizeCap>5GB</totalSizeCap>
+    <appender name="TRACE_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${PATH}/trace.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${PATH}/trace.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
+        <layout>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %-50logger{50}:%-4line %green(%-18X{LOG_ID}) %msg%n</pattern>
+        </layout>
     </appender>
 
-    <!-- 3. 错误日志单独输出 (ERROR级别) -->
-    <appender name="FILE-ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_HOME}/${APP_NAME}-error.log</file>
-        <encoder>
-            <pattern>${LOG_PATTERN}</pattern>
-            <charset>UTF-8</charset>
-        </encoder>
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_HOME}/${APP_NAME}-error-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
-            <maxFileSize>50MB</maxFileSize>
-            <maxHistory>60</maxHistory> <!-- 错误日志保留更久 -->
-            <totalSizeCap>2GB</totalSizeCap>
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${PATH}/error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${PATH}/error.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
+        <layout>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %-50logger{50}:%-4line %green(%-18X{LOG_ID}) %msg%n</pattern>
+        </layout>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>ERROR</level>
             <onMatch>ACCEPT</onMatch>
@@ -57,44 +41,15 @@
         </filter>
     </appender>
 
-    <!-- 4. 异步文件输出 (提升性能) -->
-    <appender name="ASYNC-FILE" class="ch.qos.logback.classic.AsyncAppender">
-        <queueSize>1024</queueSize> <!-- 异步队列大小 -->
-        <discardingThreshold>0</discardingThreshold> <!-- 队列剩余容量阈值 -->
-        <appender-ref ref="FILE-ROLLING" />
-    </appender>
+    <root level="ERROR">
+        <appender-ref ref="ERROR_FILE" />
+    </root>
 
-    <appender name="ASYNC-ERROR" class="ch.qos.logback.classic.AsyncAppender">
-        <queueSize>512</queueSize>
-        <discardingThreshold>0</discardingThreshold>
-        <appender-ref ref="FILE-ERROR" />
-    </appender>
+    <root level="TRACE">
+        <appender-ref ref="TRACE_FILE" />
+    </root>
 
-    <!-- 日志记录器配置 -->
-
-    <!-- Root Logger: 默认所有日志的配置 -->
-    <springProfile name="dev">
-        <root level="INFO">
-            <appender-ref ref="CONSOLE" />
-            <appender-ref ref="ASYNC-FILE" />
-            <appender-ref ref="ASYNC-ERROR" />
-        </root>
-    </springProfile>
-
-    <springProfile name="prod | staging">
-        <root level="INFO">
-            <appender-ref ref="ASYNC-FILE" />
-            <appender-ref ref="ASYNC-ERROR" />
-        </root>
-    </springProfile>
-
-    <!-- 示例: 为特定包或类设置更详细的日志级别 -->
-    <logger name="com.fanxin.train.member" level="DEBUG" additivity="false">
-        <appender-ref ref="CONSOLE" />
-        <appender-ref ref="ASYNC-FILE" />
-    </logger>
-
-    <!-- 示例: 抑制某些框架的冗长日志 -->
-    <logger name="org.springframework" level="INFO" />
-
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+    </root>
 </configuration>
