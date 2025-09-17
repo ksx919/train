@@ -2,7 +2,3 @@ server:
   port: 8001
   servlet:
     context-path: /member
-logging:
-  level:
-    com.fanxin.train.member: debug
-    org.springframework.web: info
