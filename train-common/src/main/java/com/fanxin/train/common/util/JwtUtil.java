@@ -22,7 +22,7 @@ public class JwtUtil {
 
     public static String createToken(Long id, String mobile) {
         DateTime now = DateTime.now();
-        DateTime expTime = now.offsetNew(DateField.SECOND, 10);
+        DateTime expTime = now.offsetNew(DateField.HOUR, 24);
         Map<String, Object> payload = new HashMap<>();
         // 签发时间
         payload.put(JWTPayload.ISSUED_AT, now);
@@ -39,11 +39,16 @@ public class JwtUtil {
     }
 
     public static boolean validate(String token) {
-        JWT jwt = JWTUtil.parseToken(token).setKey(key.getBytes());
-        // validate包含了verify
-        boolean validate = jwt.validate(0);
-        LOG.info("JWT token校验结果：{}", validate);
-        return validate;
+        try {
+            JWT jwt = JWTUtil.parseToken(token).setKey(key.getBytes());
+            // validate包含了verify
+            boolean validate = jwt.validate(0);
+            LOG.info("JWT token校验结果：{}", validate);
+            return validate;
+        } catch (Exception e) {
+            LOG.error("JWT token校验异常",e);
+            return false;
+        }
     }
 
     public static JSONObject getJSONObject(String token) {
