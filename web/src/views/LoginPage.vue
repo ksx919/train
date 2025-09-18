@@ -40,6 +40,7 @@
 </template>
 
 <script>
+import store from "@/store";
 import axios from 'axios';
 import { defineComponent, reactive } from 'vue';
 import { notification } from 'ant-design-vue';
@@ -73,8 +74,10 @@ export default defineComponent({
         let data = response.data;
         if (data.success) {
           notification.success({ description: '登录成功！' });
-          //登陆成功，跳转至控制台主页
-          router.push("/")
+          // 登录成功，跳到控台主页
+          router.push("/");
+          // store保存登录信息
+          store.commit("setMember", data.content);
         } else {
           notification.error({ description: data.message });
         }

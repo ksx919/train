@@ -5,6 +5,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.fanxin.train.common.exception.BusinessException;
 import com.fanxin.train.common.exception.BusinessExceptionEnum;
+import com.fanxin.train.common.util.JwtUtil;
 import com.fanxin.train.common.util.SnowUtil;
 import com.fanxin.train.member.domain.Member;
 import com.fanxin.train.member.domain.MemberExample;
@@ -84,18 +85,20 @@ public class MemberServiceImpl implements MemberService {
         String code = req.getCode();
         Member memberDB = selectByMobile(mobile);
 
-        // 如果手机号不存在
-        if (ObjectUtil.isNull(memberDB)){
+        // 如果手机号不存在，则插入一条记录
+        if (ObjectUtil.isNull(memberDB)) {
             throw new BusinessException(BusinessExceptionEnum.MEMBER_MOBILE_NOT_EXIST);
         }
 
-        //校验短信验证码
-        if (!"8888".equals(code)){
+        // 校验短信验证码
+        if (!"8888".equals(code)) {
             throw new BusinessException(BusinessExceptionEnum.MEMBER_MOBILE_CODE_ERROR);
         }
 
-        return BeanUtil.copyProperties(memberDB, MemberLoginResp.class);
-
+        MemberLoginResp memberLoginResp = BeanUtil.copyProperties(memberDB, MemberLoginResp.class);
+        String token = JwtUtil.createToken(memberLoginResp.getId(), memberLoginResp.getMobile());
+        memberLoginResp.setToken(token);
+        return memberLoginResp;
     }
 
     private Member selectByMobile(String mobile) {
