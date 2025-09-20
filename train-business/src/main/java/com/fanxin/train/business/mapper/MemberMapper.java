@@ -1,7 +1,7 @@
-package com.fanxin.train.member.mapper;
+package com.fanxin.train.business.mapper;
 
-import com.fanxin.train.member.domain.Member;
-import com.fanxin.train.member.domain.MemberExample;
+import com.fanxin.train.business.domain.Member;
+import com.fanxin.train.business.domain.MemberExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
