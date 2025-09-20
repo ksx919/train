@@ -13,4 +13,5 @@ public interface MemberService {
     void sendCode(MemberSendCodeReq req);
 
     MemberLoginResp login(MemberLoginReq req);
+
 }

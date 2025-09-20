@@ -10,6 +10,7 @@ import com.fanxin.train.common.util.SnowUtil;
 import com.fanxin.train.member.domain.Member;
 import com.fanxin.train.member.domain.MemberExample;
 import com.fanxin.train.member.mapper.MemberMapper;
+import com.fanxin.train.member.mapper.PassengerMapper;
 import com.fanxin.train.member.req.MemberLoginReq;
 import com.fanxin.train.member.req.MemberRegisterReq;
 import com.fanxin.train.member.req.MemberSendCodeReq;
@@ -29,6 +30,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Resource
     private MemberMapper memberMapper;
+
+    @Resource
+    private PassengerMapper passengerMapper;
 
     @Override
     public int count() {
