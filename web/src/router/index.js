@@ -15,7 +15,10 @@ const routes = [
     },
     children: [{
       path: 'welcome',
-      component: () => import('../views/MainPage.vue/welcome.vue'),
+      component: () => import('../views/MainPage/WelcomePage.vue'),
+    }, {
+      path: 'passenger',
+      component: () => import('../views/MainPage/PassengerPage.vue'),
     }]
   },
   {
