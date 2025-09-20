@@ -1,4 +1,4 @@
-package com.fanxin.train.common.resp;
+package com.fanxin.train.common.req;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;

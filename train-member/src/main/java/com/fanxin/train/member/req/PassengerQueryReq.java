@@ -1,6 +1,6 @@
 package com.fanxin.train.member.req;
 
-import com.fanxin.train.common.resp.PageReq;
+import com.fanxin.train.common.req.PageReq;
 import lombok.Data;
 
 @Data
