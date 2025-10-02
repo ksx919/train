@@ -5,6 +5,8 @@ import com.fanxin.train.business.req.StationQueryReq;
 import com.fanxin.train.business.req.StationSaveReq;
 import com.fanxin.train.business.resp.StationQueryResp;
 
+import java.util.List;
+
 public interface StationService {
 
     void save(StationSaveReq req);
@@ -12,4 +14,6 @@ public interface StationService {
     PageResp<StationQueryResp> queryList(StationQueryReq req);
 
     void delete(Long id);
+
+    List<StationQueryResp> queryAll();
 }

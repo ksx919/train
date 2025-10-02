@@ -1,6 +1,6 @@
-package com.fanxin.train.business.controller.admin;;
+package com.fanxin.train.business.controller.admin;
 
-import com.fanxin.train.common.context.LoginMemberContext;
+import com.fanxin.train.business.service.TrainSeatService;
 import com.fanxin.train.common.resp.CommonResp;
 import com.fanxin.train.common.resp.PageResp;
 import com.fanxin.train.business.req.TrainQueryReq;
@@ -20,22 +20,25 @@ public class TrainAdminController {
     @Resource
     private TrainService trainService;
 
+    @Resource
+    private TrainSeatService trainSeatService;
+
     @PostMapping("/save")
     public CommonResp<Object> save(@Valid @RequestBody TrainSaveReq req) {
-      trainService.save(req);
-      return new CommonResp<>();
+        trainService.save(req);
+        return new CommonResp<>();
     }
 
     @GetMapping("/query-list")
     public CommonResp<PageResp<TrainQueryResp>> queryList(@Valid TrainQueryReq req) {
-      PageResp<TrainQueryResp> list = trainService.queryList(req);
-      return new CommonResp<>(list);
+        PageResp<TrainQueryResp> list = trainService.queryList(req);
+        return new CommonResp<>(list);
     }
 
     @DeleteMapping("/delete/{id}")
     public CommonResp<Object> delete(@PathVariable Long id) {
-      trainService.delete(id);
-      return new CommonResp<>();
+        trainService.delete(id);
+        return new CommonResp<>();
     }
 
     @GetMapping("/query-all")
@@ -44,4 +47,9 @@ public class TrainAdminController {
         return new CommonResp<>(list);
     }
 
+    @GetMapping("/gen-seat/{trainCode}")
+    public CommonResp<Object> genSeat(@PathVariable String trainCode) {
+        trainSeatService.genTrainSeat(trainCode);
+        return new CommonResp<>();
+    }
 }

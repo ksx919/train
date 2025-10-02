@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class ServerGenerator {
-    static boolean readOnly = false;
+    static boolean readOnly = true;
     //static String vuePath = "web/src/views/MainPage/";
     static String vuePath = "admin/src/views/MainPage/";
     static String serverPath = "[module2]/src/main/java/com/fanxin/train/[module1]/";
