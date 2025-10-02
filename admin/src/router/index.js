@@ -11,7 +11,13 @@ const routes = [{
     component: () => import('../views/MainPage/AboutPage.vue'),
   }, {
     path: 'station',
-    component: ()=> import('../views/MainPage/StationPage.vue')
+    component: ()=> import('../views/MainPage/StationPage.vue'),
+  }, {
+    path: 'train',
+    component: ()=> import('../views/MainPage/TrainPage.vue'),
+  }, {
+    path: 'train-station',
+    component: ()=> import('../views/MainPage/Train-stationPage.vue'),
   }]
 }, {
   path: '',
