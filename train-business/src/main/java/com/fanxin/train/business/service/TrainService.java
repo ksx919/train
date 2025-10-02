@@ -5,6 +5,8 @@ import com.fanxin.train.business.req.TrainQueryReq;
 import com.fanxin.train.business.req.TrainSaveReq;
 import com.fanxin.train.business.resp.TrainQueryResp;
 
+import java.util.List;
+
 public interface TrainService {
 
     void save(TrainSaveReq req);
@@ -12,4 +14,6 @@ public interface TrainService {
     PageResp<TrainQueryResp> queryList(TrainQueryReq req);
 
     void delete(Long id);
+
+    List<TrainQueryResp> queryAll();
 }

@@ -28,7 +28,7 @@
            ok-text="确认" cancel-text="取消">
     <a-form :model="trainStation" :label-col="{span: 4}" :wrapper-col="{ span: 20 }">
       <a-form-item label="车次编号">
-        <a-input v-model:value="trainStation.trainCode" />
+        <train-select-view v-model="trainStation.trainCode" width="50%"></train-select-view>
       </a-form-item>
       <a-form-item label="站序">
         <a-input v-model:value="trainStation.index" />
@@ -37,7 +37,7 @@
         <a-input v-model:value="trainStation.name" />
       </a-form-item>
       <a-form-item label="站名拼音">
-        <a-input v-model:value="trainStation.namePinyin" />
+        <a-input v-model:value="trainStation.namePinyin" disabled/>
       </a-form-item>
       <a-form-item label="进站时间">
         <a-time-picker v-model:value="trainStation.inTime" valueFormat="HH:mm:ss" placeholder="请选择时间" />
@@ -56,12 +56,15 @@
 </template>
 
 <script>
-import { defineComponent, ref, onMounted } from 'vue';
+import {defineComponent, ref, onMounted, watch} from 'vue';
 import {notification} from "ant-design-vue";
 import axios from "axios";
+import {pinyin} from "pinyin-pro";
+import TrainSelectView from "@/components/train-select";
 
 export default defineComponent({
   name: "train-station-view",
+  components: {TrainSelectView},
   setup() {
     const visible = ref(false);
     let trainStation = ref({
@@ -86,51 +89,58 @@ export default defineComponent({
     });
     let loading = ref(false);
     const columns = [
-    {
-      title: '车次编号',
-      dataIndex: 'trainCode',
-      key: 'trainCode',
-    },
-    {
-      title: '站序',
-      dataIndex: 'index',
-      key: 'index',
-    },
-    {
-      title: '站名',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: '站名拼音',
-      dataIndex: 'namePinyin',
-      key: 'namePinyin',
-    },
-    {
-      title: '进站时间',
-      dataIndex: 'inTime',
-      key: 'inTime',
-    },
-    {
-      title: '出站时间',
-      dataIndex: 'outTime',
-      key: 'outTime',
-    },
-    {
-      title: '停站时长',
-      dataIndex: 'stopTime',
-      key: 'stopTime',
-    },
-    {
-      title: '里程（公里）',
-      dataIndex: 'km',
-      key: 'km',
-    },
-    {
-      title: '操作',
-      dataIndex: 'operation'
-    }
+      {
+        title: '车次编号',
+        dataIndex: 'trainCode',
+        key: 'trainCode',
+      },
+      {
+        title: '站序',
+        dataIndex: 'index',
+        key: 'index',
+      },
+      {
+        title: '站名',
+        dataIndex: 'name',
+        key: 'name',
+      },
+      {
+        title: '站名拼音',
+        dataIndex: 'namePinyin',
+        key: 'namePinyin',
+      },
+      {
+        title: '进站时间',
+        dataIndex: 'inTime',
+        key: 'inTime',
+      },
+      {
+        title: '出站时间',
+        dataIndex: 'outTime',
+        key: 'outTime',
+      },
+      {
+        title: '停站时长',
+        dataIndex: 'stopTime',
+        key: 'stopTime',
+      },
+      {
+        title: '里程（公里）',
+        dataIndex: 'km',
+        key: 'km',
+      },
+      {
+        title: '操作',
+        dataIndex: 'operation'
+      }
     ];
+    watch(() => trainStation.value.name, ()=>{
+      if (Tool.isNotEmpty(trainStation.value.name)) {
+        trainStation.value.namePinyin = pinyin(trainStation.value.name, { toneType: 'none'}).replaceAll(" ", "");
+      } else {
+        trainStation.value.namePinyin = "";
+      }
+    }, {immediate: true});
 
     const onAdd = () => {
       trainStation.value = {};
@@ -227,7 +237,7 @@ export default defineComponent({
       onAdd,
       handleOk,
       onEdit,
-      onDelete
+      onDelete,
     };
   },
 });

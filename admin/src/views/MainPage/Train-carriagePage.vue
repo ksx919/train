@@ -35,7 +35,7 @@
            ok-text="确认" cancel-text="取消">
     <a-form :model="trainCarriage" :label-col="{span: 4}" :wrapper-col="{ span: 20 }">
       <a-form-item label="车次编号">
-        <a-input v-model:value="trainCarriage.trainCode" />
+        <train-select-view v-model="trainCarriage.trainCode"></train-select-view>
       </a-form-item>
       <a-form-item label="厢号">
         <a-input v-model:value="trainCarriage.index" />
@@ -64,9 +64,10 @@
 import { defineComponent, ref, onMounted } from 'vue';
 import {notification} from "ant-design-vue";
 import axios from "axios";
-
+import TrainSelectView from "@/components/train-select";
 export default defineComponent({
   name: "train-carriage-view",
+  components: {TrainSelectView},
   setup() {
     const SEAT_TYPE_ARRAY = window.SEAT_TYPE_ARRAY;
     const visible = ref(false);
@@ -90,40 +91,40 @@ export default defineComponent({
     });
     let loading = ref(false);
     const columns = [
-    {
-      title: '车次编号',
-      dataIndex: 'trainCode',
-      key: 'trainCode',
-    },
-    {
-      title: '厢号',
-      dataIndex: 'index',
-      key: 'index',
-    },
-    {
-      title: '座位类型',
-      dataIndex: 'seatType',
-      key: 'seatType',
-    },
-    {
-      title: '座位数',
-      dataIndex: 'seatCount',
-      key: 'seatCount',
-    },
-    {
-      title: '排数',
-      dataIndex: 'rowCount',
-      key: 'rowCount',
-    },
-    {
-      title: '列数',
-      dataIndex: 'colCount',
-      key: 'colCount',
-    },
-    {
-      title: '操作',
-      dataIndex: 'operation'
-    }
+      {
+        title: '车次编号',
+        dataIndex: 'trainCode',
+        key: 'trainCode',
+      },
+      {
+        title: '厢号',
+        dataIndex: 'index',
+        key: 'index',
+      },
+      {
+        title: '座位类型',
+        dataIndex: 'seatType',
+        key: 'seatType',
+      },
+      {
+        title: '座位数',
+        dataIndex: 'seatCount',
+        key: 'seatCount',
+      },
+      {
+        title: '排数',
+        dataIndex: 'rowCount',
+        key: 'rowCount',
+      },
+      {
+        title: '列数',
+        dataIndex: 'colCount',
+        key: 'colCount',
+      },
+      {
+        title: '操作',
+        dataIndex: 'operation'
+      }
     ];
 
     const onAdd = () => {

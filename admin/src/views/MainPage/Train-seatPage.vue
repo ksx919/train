@@ -42,7 +42,7 @@
            ok-text="确认" cancel-text="取消">
     <a-form :model="trainSeat" :label-col="{span: 4}" :wrapper-col="{ span: 20 }">
       <a-form-item label="车次编号">
-        <a-input v-model:value="trainSeat.trainCode" />
+        <train-select-view v-model="trainSeat.trainCode"></train-select-view>
       </a-form-item>
       <a-form-item label="厢序">
         <a-input v-model:value="trainSeat.carriageIndex" />
@@ -75,9 +75,10 @@
 import { defineComponent, ref, onMounted } from 'vue';
 import {notification} from "ant-design-vue";
 import axios from "axios";
-
+import TrainSelectView from "@/components/train-select";
 export default defineComponent({
   name: "train-seat-view",
+  components: {TrainSelectView},
   setup() {
     const SEAT_COL_ARRAY = window.SEAT_COL_ARRAY;
     const SEAT_TYPE_ARRAY = window.SEAT_TYPE_ARRAY;
@@ -102,40 +103,40 @@ export default defineComponent({
     });
     let loading = ref(false);
     const columns = [
-    {
-      title: '车次编号',
-      dataIndex: 'trainCode',
-      key: 'trainCode',
-    },
-    {
-      title: '厢序',
-      dataIndex: 'carriageIndex',
-      key: 'carriageIndex',
-    },
-    {
-      title: '排号',
-      dataIndex: 'row',
-      key: 'row',
-    },
-    {
-      title: '列号',
-      dataIndex: 'col',
-      key: 'col',
-    },
-    {
-      title: '座位类型',
-      dataIndex: 'seatType',
-      key: 'seatType',
-    },
-    {
-      title: '同车厢座序',
-      dataIndex: 'carriageSeatIndex',
-      key: 'carriageSeatIndex',
-    },
-    {
-      title: '操作',
-      dataIndex: 'operation'
-    }
+      {
+        title: '车次编号',
+        dataIndex: 'trainCode',
+        key: 'trainCode',
+      },
+      {
+        title: '厢序',
+        dataIndex: 'carriageIndex',
+        key: 'carriageIndex',
+      },
+      {
+        title: '排号',
+        dataIndex: 'row',
+        key: 'row',
+      },
+      {
+        title: '列号',
+        dataIndex: 'col',
+        key: 'col',
+      },
+      {
+        title: '座位类型',
+        dataIndex: 'seatType',
+        key: 'seatType',
+      },
+      {
+        title: '同车厢座序',
+        dataIndex: 'carriageSeatIndex',
+        key: 'carriageSeatIndex',
+      },
+      {
+        title: '操作',
+        dataIndex: 'operation'
+      }
     ];
 
     const onAdd = () => {
