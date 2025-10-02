@@ -32,7 +32,12 @@
       </a-menu-item>
       <a-menu-item key="/train-carriage">
         <router-link to="/train-carriage">
-          <user-outlined /> &nbsp; 火车车厢管理
+          <user-outlined /> &nbsp; 车厢管理
+        </router-link>
+      </a-menu-item>
+      <a-menu-item key="/train-seat">
+        <router-link to="/train-seat">
+          <user-outlined /> &nbsp; 座位管理
         </router-link>
       </a-menu-item>
     </a-menu>
