@@ -5,6 +5,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.EnumUtil;
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.fanxin.train.business.domain.DailyTrain;
 import com.fanxin.train.business.domain.DailyTrainTicket;
@@ -69,6 +70,18 @@ public class DailyTrainTicketServiceImpl implements DailyTrainTicketService {
         DailyTrainTicketExample dailyTrainTicketExample = new DailyTrainTicketExample();
         dailyTrainTicketExample.setOrderByClause("id desc");
         DailyTrainTicketExample.Criteria criteria = dailyTrainTicketExample.createCriteria();
+        if (ObjUtil.isNotNull(req.getDate())) {
+            criteria.andDateEqualTo(req.getDate());
+        }
+        if (ObjUtil.isNotEmpty(req.getTrainCode())) {
+            criteria.andTrainCodeEqualTo(req.getTrainCode());
+        }
+        if (ObjUtil.isNotEmpty(req.getStart())) {
+            criteria.andStartEqualTo(req.getStart());
+        }
+        if (ObjUtil.isNotEmpty(req.getEnd())) {
+            criteria.andEndEqualTo(req.getEnd());
+        }
 
         LOG.info("查询页码：{}", req.getPage());
         LOG.info("每页条数：{}", req.getSize());
@@ -112,11 +125,6 @@ public class DailyTrainTicketServiceImpl implements DailyTrainTicketService {
         }
 
         DateTime now = DateTime.now();
-        int ydz = dailyTrainSeatService.countSeat(date, trainCode, SeatTypeEnum.YDZ.getCode());
-        int edz = dailyTrainSeatService.countSeat(date, trainCode, SeatTypeEnum.EDZ.getCode());
-        int rw = dailyTrainSeatService.countSeat(date, trainCode, SeatTypeEnum.RW.getCode());
-        int yw = dailyTrainSeatService.countSeat(date, trainCode, SeatTypeEnum.YW.getCode());
-
         for (int i = 0; i < stationList.size(); i++) {
             // 得到出发站
             TrainStation trainStationStart = stationList.get(i);
@@ -137,6 +145,10 @@ public class DailyTrainTicketServiceImpl implements DailyTrainTicketService {
                 dailyTrainTicket.setEndPinyin(trainStationEnd.getNamePinyin());
                 dailyTrainTicket.setEndTime(trainStationEnd.getInTime());
                 dailyTrainTicket.setEndIndex(trainStationEnd.getIndex());
+                int ydz = dailyTrainSeatService.countSeat(date, trainCode, SeatTypeEnum.YDZ.getCode());
+                int edz = dailyTrainSeatService.countSeat(date, trainCode, SeatTypeEnum.EDZ.getCode());
+                int rw = dailyTrainSeatService.countSeat(date, trainCode, SeatTypeEnum.RW.getCode());
+                int yw = dailyTrainSeatService.countSeat(date, trainCode, SeatTypeEnum.YW.getCode());
                 // 票价 = 里程之和 * 座位单价 * 车次类型系数
                 String trainType = dailyTrain.getType();
                 // 计算票价系数：TrainTypeEnum.priceRate
@@ -159,6 +171,5 @@ public class DailyTrainTicketServiceImpl implements DailyTrainTicketService {
             }
         }
         LOG.info("生成日期【{}】车次【{}】的余票信息结束", DateUtil.formatDate(date), trainCode);
-
     }
 }
