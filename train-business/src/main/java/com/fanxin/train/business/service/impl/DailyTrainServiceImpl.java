@@ -12,6 +12,7 @@ import com.fanxin.train.business.mapper.DailyTrainMapper;
 import com.fanxin.train.business.req.DailyTrainQueryReq;
 import com.fanxin.train.business.req.DailyTrainSaveReq;
 import com.fanxin.train.business.resp.DailyTrainQueryResp;
+import com.fanxin.train.business.service.DailyTrainCarriageService;
 import com.fanxin.train.business.service.DailyTrainService;
 import com.fanxin.train.business.service.DailyTrainStationService;
 import com.fanxin.train.business.service.TrainService;
@@ -40,6 +41,9 @@ public class DailyTrainServiceImpl implements DailyTrainService {
 
     @Resource
     private DailyTrainStationService dailyTrainStationService;
+
+    @Resource
+    private DailyTrainCarriageService dailyTrainCarriageService;
 
     @Override
     public void save(DailyTrainSaveReq req) {
@@ -128,6 +132,10 @@ public class DailyTrainServiceImpl implements DailyTrainService {
 
         // 生成该车次的车站数据
         dailyTrainStationService.genDaily(date, train.getCode());
+
+        // 生成该车次的车厢数据
+        dailyTrainCarriageService.genDaily(date, train.getCode());
+
         LOG.info("生成日期【{}】车次【{}】的信息结束", DateUtil.formatDate(date), train.getCode());
     }
 }
