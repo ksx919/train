@@ -38,6 +38,9 @@ const routes = [{
     },{
       path: 'daily-train-carriage',
       component: ()=>import('../views/MainPage/business/Daily-train-carriagePage.vue')
+    },{
+      path: 'daily-train-seat',
+      component: ()=>import('../views/MainPage/business/Daily-train-seatPage.vue')
     }]
   }, {
     path: 'batch/',
