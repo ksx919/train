@@ -1,9 +1,10 @@
 package com.fanxin.train.business.service;
 
-import com.fanxin.train.common.resp.PageResp;
+import com.fanxin.train.business.domain.Train;
 import com.fanxin.train.business.req.TrainQueryReq;
 import com.fanxin.train.business.req.TrainSaveReq;
 import com.fanxin.train.business.resp.TrainQueryResp;
+import com.fanxin.train.common.resp.PageResp;
 
 import java.util.List;
 
@@ -16,4 +17,6 @@ public interface TrainService {
     void delete(Long id);
 
     List<TrainQueryResp> queryAll();
+
+    List<Train> selectAll();
 }

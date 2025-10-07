@@ -29,3 +29,5 @@ spring:
             allowCredentials: true
             # 跨域检测的有效期，会发起一个OPTION请求
             maxAge: 3600
+  application:
+    name: gateway

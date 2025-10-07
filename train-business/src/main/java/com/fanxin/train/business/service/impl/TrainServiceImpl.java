@@ -97,9 +97,15 @@ public class TrainServiceImpl implements TrainService {
 
     @Override
     public List<TrainQueryResp> queryAll() {
-        TrainExample trainExample = new TrainExample();
-        trainExample.setOrderByClause("code desc");
-        List<Train> trainList = trainMapper.selectByExample(trainExample);
+        List<Train> trainList = selectAll();
         return BeanUtil.copyToList(trainList, TrainQueryResp.class);
     }
+
+    @Override
+    public List<Train> selectAll() {
+        TrainExample trainExample = new TrainExample();
+        trainExample.setOrderByClause("code asc");
+        return trainMapper.selectByExample(trainExample);
+    }
+
 }
