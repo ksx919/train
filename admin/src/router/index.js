@@ -28,6 +28,12 @@ const routes = [{
       component: ()=> import('../views/MainPage/base/Train-seatPage.vue'),
     }]
   }, {
+    path: 'member/',
+    children: [{
+      path: 'ticket',
+      component: ()=> import('../views/MainPage/member/TicketPage.vue')
+    }]
+  }, {
     path: 'business/',
     children: [{
       path: 'daily-train',
