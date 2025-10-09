@@ -227,7 +227,7 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
                 // 判断当前座位不能被选中过
                 boolean alreadyChooseFlag = false;
                 for (DailyTrainSeat finalseat : finalSeatList){
-                    if (finalseat.getId().equals(dailyTrainCarriage.getId())) {
+                    if (finalseat.getId().equals(dailyTrainSeat.getId())) {
                         alreadyChooseFlag = true;
                         break;
                     }
