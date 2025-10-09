@@ -1,6 +1,7 @@
 package com.fanxin.train.business.service;
 
 import com.fanxin.train.business.domain.DailyTrain;
+import com.fanxin.train.business.domain.DailyTrainTicket;
 import com.fanxin.train.business.req.DailyTrainTicketQueryReq;
 import com.fanxin.train.business.req.DailyTrainTicketSaveReq;
 import com.fanxin.train.business.resp.DailyTrainTicketQueryResp;
@@ -17,4 +18,6 @@ public interface DailyTrainTicketService {
     void delete(Long id);
 
     void genDaily(DailyTrain dailyTrain, Date date, String trainCode);
+
+    DailyTrainTicket selectByUnique(Date date, String trainCode, String start, String end);
 }

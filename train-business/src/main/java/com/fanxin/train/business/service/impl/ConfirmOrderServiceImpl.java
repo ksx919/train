@@ -4,17 +4,19 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
-import com.fanxin.train.business.enums.ConfirmOrderStatusEnum;
-import com.fanxin.train.business.req.ConfirmOrderDoReq;
-import com.fanxin.train.common.context.LoginMemberContext;
-import com.fanxin.train.common.resp.PageResp;
-import com.fanxin.train.common.util.SnowUtil;
 import com.fanxin.train.business.domain.ConfirmOrder;
 import com.fanxin.train.business.domain.ConfirmOrderExample;
+import com.fanxin.train.business.domain.DailyTrainTicket;
+import com.fanxin.train.business.enums.ConfirmOrderStatusEnum;
 import com.fanxin.train.business.mapper.ConfirmOrderMapper;
+import com.fanxin.train.business.req.ConfirmOrderDoReq;
 import com.fanxin.train.business.req.ConfirmOrderQueryReq;
 import com.fanxin.train.business.resp.ConfirmOrderQueryResp;
 import com.fanxin.train.business.service.ConfirmOrderService;
+import com.fanxin.train.business.service.DailyTrainTicketService;
+import com.fanxin.train.common.context.LoginMemberContext;
+import com.fanxin.train.common.resp.PageResp;
+import com.fanxin.train.common.util.SnowUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
@@ -22,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -31,6 +34,9 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
 
     @Resource
     private ConfirmOrderMapper confirmOrderMapper;
+
+    @Resource
+    private DailyTrainTicketService dailyTrainTicketService;
 
     @Override
     public void save(ConfirmOrderDoReq req) {
@@ -79,16 +85,20 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
     @Override
     public void doConfirm(ConfirmOrderDoReq req) {
         //省略业务数据校验，如：车次是否存在，余票是否存在，车次是否在有效期内，ticket条数>0，同乘客同车次是否已经买过
+        Date date = req.getDate();
+        String trainCode = req.getTrainCode();
+        String start = req.getStart();
+        String end = req.getEnd();
 
         //保存确认订单表，状态初始
         DateTime now = DateTime.now();
         ConfirmOrder confirmOrder = new ConfirmOrder();
         confirmOrder.setId(SnowUtil.getSnowflakeNextId());
         confirmOrder.setMemberId(LoginMemberContext.getId());
-        confirmOrder.setDate(req.getDate());
-        confirmOrder.setTrainCode(req.getTrainCode());
-        confirmOrder.setStart(req.getStart());
-        confirmOrder.setEnd(req.getEnd());
+        confirmOrder.setDate(date);
+        confirmOrder.setTrainCode(trainCode);
+        confirmOrder.setStart(start);
+        confirmOrder.setEnd(end);
         confirmOrder.setDailyTrainTicketId(req.getDailyTrainTicketId());
         confirmOrder.setStatus(ConfirmOrderStatusEnum.INIT.getCode());
         confirmOrder.setCreateTime(now);
@@ -98,6 +108,8 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
         confirmOrderMapper.insert(confirmOrder);
 
         //查出余票记录，需要得到真实的库存
+        DailyTrainTicket dailyTrainTicket = dailyTrainTicketService.selectByUnique(date, trainCode, start, end);
+        LOG.info("查出余票记录：{}", dailyTrainTicket);
 
         //扣减余票数量，并判断余票是否足够
 
