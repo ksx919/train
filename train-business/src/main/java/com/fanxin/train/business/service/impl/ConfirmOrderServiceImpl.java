@@ -17,10 +17,7 @@ import com.fanxin.train.business.req.ConfirmOrderDoReq;
 import com.fanxin.train.business.req.ConfirmOrderQueryReq;
 import com.fanxin.train.business.req.ConfirmOrderTicketReq;
 import com.fanxin.train.business.resp.ConfirmOrderQueryResp;
-import com.fanxin.train.business.service.ConfirmOrderService;
-import com.fanxin.train.business.service.DailyTrainCarriageService;
-import com.fanxin.train.business.service.DailyTrainSeatService;
-import com.fanxin.train.business.service.DailyTrainTicketService;
+import com.fanxin.train.business.service.*;
 import com.fanxin.train.common.context.LoginMemberContext;
 import com.fanxin.train.common.exception.BusinessException;
 import com.fanxin.train.common.exception.BusinessExceptionEnum;
@@ -53,6 +50,9 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
 
     @Resource
     private DailyTrainSeatService dailyTrainSeatService;
+
+    @Resource
+    private AfterConfirmOrderService afterConfirmOrderService;
 
     @Override
     public void save(ConfirmOrderDoReq req) {
@@ -190,15 +190,13 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
         }
 
         LOG.info("最终选座：{}",finalSeatList);
-        //选座
-            //一个车厢一个车厢的获取座位数据
-            //挑选符合条件的座位，如果这个车厢不满足，则进入下一个车厢（多个选座应该在同一车厢）
-
         //选中座位后事务处理
-        //座位表修改售卖情况sell
-        //余票详情表修改余票
-        //为会员增加购票记录
-        //更新确认订单为成功
+
+            //座位表修改售卖情况sell
+            //余票详情表修改余票
+            //为会员增加购票记录
+            //更新确认订单为成功
+        afterConfirmOrderService.afterDoConfirm(dailyTrainTicket,finalSeatList);
     }
 
     /**

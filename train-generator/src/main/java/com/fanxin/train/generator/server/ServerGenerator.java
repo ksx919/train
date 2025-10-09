@@ -15,8 +15,8 @@ import java.util.*;
 
 public class ServerGenerator {
     static boolean readOnly = true;
-    //static String vuePath = "web/src/views/MainPage/";
-    static String vuePath = "admin/src/views/MainPage/business/";
+    static String vuePath = "web/src/views/MainPage/";
+//    static String vuePath = "admin/src/views/MainPage/business/";
     static String serverPath = "[module2]/src/main/java/com/fanxin/train/[module1]/";
     static String pomPath = "train-generator\\pom.xml";
     static {
