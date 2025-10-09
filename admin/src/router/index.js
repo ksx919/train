@@ -44,6 +44,9 @@ const routes = [{
     },{
       path: 'daily-train-ticket',
       component: ()=>import('../views/MainPage/business/Daily-train-ticketPage.vue')
+    },{
+      path: 'confirm-order',
+      component: ()=>import('../views/MainPage/business/Confirm-orderPage.vue')
     }]
   }, {
     path: 'batch/',
