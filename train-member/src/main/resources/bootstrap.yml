@@ -1,19 +1,23 @@
-# ???????
 spring:
   application:
     name: member
 
-  ## ?????nacos???????????dataId?member-dev.properties
   profiles:
     active: dev
-  ## nacos server??
   cloud:
     nacos:
       config:
         server-addr: 127.0.0.1:8848
-        ## ???????????properties
         file-extension: yml
         namespace: train
       discovery:
         server-addr: 127.0.0.1:8848
         namespace: train
+
+seata:
+  tx-service-group: train-group
+  service:
+    vgroup-mapping:
+      train-group: default
+    grouplist:
+      default: 120.26.29.90:8091

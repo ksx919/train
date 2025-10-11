@@ -18,3 +18,11 @@ spring:
         ## nacos server注册中心地址
         server-addr: 127.0.0.1:8848
         namespace: train
+
+seata:
+  tx-service-group: train-group
+  service:
+    vgroup-mapping:
+      train-group: default
+    grouplist:
+      default: 120.26.29.90:8091
