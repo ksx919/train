@@ -37,7 +37,7 @@ public class TicketSaveReq {
      */
     @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @NotNull(message = "【日期】不能为空")
-    private Date date;
+    private Date trainDate;
 
     /**
      * 车次编号
@@ -55,19 +55,19 @@ public class TicketSaveReq {
      * 排号|01, 02
      */
     @NotBlank(message = "【排号】不能为空")
-    private String row;
+    private String seatRow;
 
     /**
      * 列号|枚举[SeatColEnum]
      */
     @NotBlank(message = "【列号】不能为空")
-    private String col;
+    private String seatCol;
 
     /**
      * 出发站
      */
     @NotBlank(message = "【出发站】不能为空")
-    private String start;
+    private String startStation;
 
     /**
      * 出发时间
@@ -80,7 +80,7 @@ public class TicketSaveReq {
      * 到达站
      */
     @NotBlank(message = "【到达站】不能为空")
-    private String end;
+    private String endStation;
 
     /**
      * 到站时间
@@ -118,14 +118,14 @@ public class TicketSaveReq {
         sb.append(", memberId=").append(memberId);
         sb.append(", passengerId=").append(passengerId);
         sb.append(", passengerName=").append(passengerName);
-        sb.append(", date=").append(date);
+        sb.append(", trainDate=").append(trainDate);
         sb.append(", trainCode=").append(trainCode);
         sb.append(", carriageIndex=").append(carriageIndex);
-        sb.append(", row=").append(row);
-        sb.append(", col=").append(col);
-        sb.append(", start=").append(start);
+        sb.append(", seatRow=").append(seatRow);
+        sb.append(", seatCol=").append(seatCol);
+        sb.append(", startStation=").append(startStation);
         sb.append(", startTime=").append(startTime);
-        sb.append(", end=").append(end);
+        sb.append(", endStation=").append(endStation);
         sb.append(", endTime=").append(endTime);
         sb.append(", seatType=").append(seatType);
         sb.append(", createTime=").append(createTime);
