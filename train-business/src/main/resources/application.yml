@@ -25,6 +25,18 @@ spring:
       max-pool-prepared-statement-per-connection-size: 20
   application:
     name: business
+  data:
+    redis:
+      port: 6379
+      host: 120.26.29.90
+      password: Aa123123
+  cache:
+    type: redis
+    redis:
+      use-key-prefix: true
+      cache-null-values: false
+      key-prefix: train_cache_
+      time-to-live: 60s
 
 # mybatis xml路径
 mybatis:
