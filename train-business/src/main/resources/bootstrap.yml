@@ -18,7 +18,20 @@ spring:
         ## nacos server注册中心地址
         server-addr: 127.0.0.1:8848
         namespace: train
-
+    sentinel:
+      transport:
+        #sentinel控台：https://github.com/alibaba/spring-cloud-alibaba/wiki/Sentinel
+        port: 8719
+        dashboard: localhost:18080
+      datasource:
+        nacos:
+          nacos:
+            # sentinel + nacos
+            serverAddr: localhost:8848
+            namespace: train
+            groupId: TRAIN_GROUP
+            dataId: sentinel
+            ruleType: flow
 #seata:
 #  registry:
 #    # seata注册中心

@@ -37,11 +37,6 @@ spring:
       cache-null-values: false
       key-prefix: train_cache_
       time-to-live: 60s
-  cloud:
-    sentinel:
-      transport:
-        port: 8719
-        dashboard: localhost:18080
 
 # mybatis xml路径
 mybatis:
