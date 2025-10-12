@@ -8,6 +8,8 @@ import cn.hutool.core.util.EnumUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.fastjson.JSON;
 import com.fanxin.train.business.domain.*;
 import com.fanxin.train.business.enums.ConfirmOrderStatusEnum;
@@ -109,6 +111,7 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
     }
 
     @Override
+    @SentinelResource(value = "doConfirm", blockHandler = "doConfirmBlock")
     public void doConfirm(ConfirmOrderDoReq req) {
         String lockKey = DateUtil.formatDate(req.getDate()) + "-" + req.getTrainCode();
         // setIfAbsent就是对应redis的setnx
@@ -262,11 +265,14 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
                 LOG.error("保存购票信息失败", e);
                 throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_EXCEPTION);
             }
-            LOG.info("购票流程结束，释放锁！lockKey：{}", lockKey);
-            redisTemplate.delete(lockKey);
+            // LOG.info("购票流程结束，释放锁！lockKey：{}", lockKey);
+            // redisTemplate.delete(lockKey);
             // } catch (InterruptedException e) {
             //     LOG.error("购票异常", e);
         } finally {
+            // try finally不能包含加锁的那段代码，否则加锁失败会走到finally里，从而释放别的线程的锁
+            LOG.info("购票流程结束，释放锁！lockKey：{}", lockKey);
+            redisTemplate.delete(lockKey);
             // LOG.info("购票流程结束，释放锁！");
             // if (null != lock && lock.isHeldByCurrentThread()) {
             //     lock.unlock();
@@ -274,6 +280,17 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
         }
 
     }
+
+    /**
+     * 降级方法，需包含限流方法的所有参数和BlockException参数
+     * @param req
+     * @param e
+     */
+    public void doConfirmBlock(ConfirmOrderDoReq req, BlockException e) {
+        LOG.info("购票请求被限流：{}", req);
+        throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_FLOW_EXCEPTION);
+    }
+
 
 
     /**
