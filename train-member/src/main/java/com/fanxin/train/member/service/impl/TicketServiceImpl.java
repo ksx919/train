@@ -14,7 +14,7 @@ import com.fanxin.train.member.resp.TicketQueryResp;
 import com.fanxin.train.member.service.TicketService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import io.seata.core.context.RootContext;
+//import io.seata.core.context.RootContext;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +37,7 @@ public class TicketServiceImpl implements TicketService {
      */
     @Override
     public void save(MemberTicketReq req) throws Exception {
-        LOG.info("seata全局事务ID save：{}", RootContext.getXID());
+//        LOG.info("seata全局事务ID save：{}", RootContext.getXID());
         DateTime now = DateTime.now();
         Ticket ticket = BeanUtil.copyProperties(req, Ticket.class);
         ticket.setId(SnowUtil.getSnowflakeNextId());
