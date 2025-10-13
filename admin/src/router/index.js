@@ -36,6 +36,9 @@ const routes = [{
   }, {
     path: 'business/',
     children: [{
+      path: 'sk-token',
+      component: ()=>import('../views/MainPage/business/Sk-tokenPage.vue')
+    },{
       path: 'daily-train',
       component: ()=>import('../views/MainPage/business/Daily-trainPage.vue')
     },{
