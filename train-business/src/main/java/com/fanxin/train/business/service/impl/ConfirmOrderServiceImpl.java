@@ -13,6 +13,7 @@ import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.fastjson.JSON;
 import com.fanxin.train.business.domain.*;
 import com.fanxin.train.business.enums.ConfirmOrderStatusEnum;
+import com.fanxin.train.business.enums.RedisKeyPreEnum;
 import com.fanxin.train.business.enums.SeatColEnum;
 import com.fanxin.train.business.enums.SeatTypeEnum;
 import com.fanxin.train.business.mapper.ConfirmOrderMapper;
@@ -66,6 +67,9 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
 //    @Autowired
 //    private RedissonClient redissonClient;
 
+    @Resource
+    private SkTokenService skTokenService;
+
     @Override
     public void save(ConfirmOrderDoReq req) {
         DateTime now = DateTime.now();
@@ -113,7 +117,16 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
     @Override
     @SentinelResource(value = "doConfirm", blockHandler = "doConfirmBlock")
     public void doConfirm(ConfirmOrderDoReq req) {
-        String lockKey = DateUtil.formatDate(req.getDate()) + "-" + req.getTrainCode();
+        // 校验令牌余量
+        boolean validSkToken = skTokenService.validSkToken(req.getDate(), req.getTrainCode(), LoginMemberContext.getId());
+        if (validSkToken) {
+            LOG.info("令牌校验通过");
+        } else {
+            LOG.info("令牌校验不通过");
+            throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_SK_TOKEN_FAIL);
+        }
+
+        String lockKey = RedisKeyPreEnum.CONFIRM_ORDER + "-" + DateUtil.formatDate(req.getDate()) + "-" + req.getTrainCode();
         // setIfAbsent就是对应redis的setnx
         Boolean setIfAbsent = redisTemplate.opsForValue().setIfAbsent(lockKey, lockKey, 10, TimeUnit.SECONDS);
         if (Boolean.TRUE.equals(setIfAbsent)) {

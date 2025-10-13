@@ -38,6 +38,12 @@ spring:
       key-prefix: train_cache_
       time-to-live: 60s
 
+rocketmq:
+  # rocketmq
+  name-server: http://localhost:9876
+  producer:
+    group: default
+
 # mybatis xml路径
 mybatis:
   mapper-locations: classpath:/mapper/**/*.xml
