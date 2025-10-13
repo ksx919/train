@@ -2,16 +2,19 @@ package com.fanxin.train.business.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.fanxin.train.common.resp.PageResp;
-import com.fanxin.train.common.util.SnowUtil;
 import com.fanxin.train.business.domain.SkToken;
 import com.fanxin.train.business.domain.SkTokenExample;
 import com.fanxin.train.business.mapper.SkTokenMapper;
 import com.fanxin.train.business.req.SkTokenQueryReq;
 import com.fanxin.train.business.req.SkTokenSaveReq;
 import com.fanxin.train.business.resp.SkTokenQueryResp;
+import com.fanxin.train.business.service.DailyTrainSeatService;
+import com.fanxin.train.business.service.DailyTrainStationService;
 import com.fanxin.train.business.service.SkTokenService;
+import com.fanxin.train.common.resp.PageResp;
+import com.fanxin.train.common.util.SnowUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
@@ -19,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -28,6 +32,44 @@ public class SkTokenServiceImpl implements SkTokenService {
 
     @Resource
     private SkTokenMapper skTokenMapper;
+
+    @Resource
+    private DailyTrainSeatService dailyTrainSeatService;
+
+    @Resource
+    private DailyTrainStationService dailyTrainStationService;
+
+    /**
+     * 初始化
+     */
+    @Override
+    public void genDaily(Date date, String trainCode) {
+        LOG.info("删除日期【{}】车次【{}】的令牌记录", DateUtil.formatDate(date), trainCode);
+        SkTokenExample skTokenExample = new SkTokenExample();
+        skTokenExample.createCriteria().andDateEqualTo(date).andTrainCodeEqualTo(trainCode);
+        skTokenMapper.deleteByExample(skTokenExample);
+
+        DateTime now = DateTime.now();
+        SkToken skToken = new SkToken();
+        skToken.setDate(date);
+        skToken.setTrainCode(trainCode);
+        skToken.setId(SnowUtil.getSnowflakeNextId());
+        skToken.setCreateTime(now);
+        skToken.setUpdateTime(now);
+
+        int seatCount = dailyTrainSeatService.countSeat(date, trainCode);
+        LOG.info("车次【{}】座位数：{}", trainCode, seatCount);
+
+        long stationCount = dailyTrainStationService.countByTrainCode(date, trainCode);
+        LOG.info("车次【{}】到站数：{}", trainCode, stationCount);
+
+        // 3/4需要根据实际卖票比例来定，一趟火车最多可以卖（seatCount * stationCount）张火车票
+        int count = (int) (seatCount * stationCount * 3/4);
+        LOG.info("车次【{}】初始生成令牌数：{}", trainCode, count);
+        skToken.setCount(count);
+
+        skTokenMapper.insert(skToken);
+    }
 
     @Override
     public void save(SkTokenSaveReq req) {

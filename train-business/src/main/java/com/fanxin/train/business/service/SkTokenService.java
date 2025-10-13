@@ -5,7 +5,11 @@ import com.fanxin.train.business.req.SkTokenQueryReq;
 import com.fanxin.train.business.req.SkTokenSaveReq;
 import com.fanxin.train.business.resp.SkTokenQueryResp;
 
+import java.util.Date;
+
 public interface SkTokenService {
+
+    void genDaily(Date date, String trainCode);
 
     void save(SkTokenSaveReq req);
 

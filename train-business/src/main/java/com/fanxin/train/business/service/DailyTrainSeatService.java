@@ -19,6 +19,8 @@ public interface DailyTrainSeatService {
 
     void genDaily(Date date, String trainCode);
 
+    int countSeat(Date date, String trainCode);
+
     int countSeat(Date date, String trainCode, String seatType);
 
     List<DailyTrainSeat> selectByCarriage(Date date, String trainCode, Integer carriageIndex);
